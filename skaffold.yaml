@@ -1,0 +1,38 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+# 쿠버네티스 배포 설정
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/gcpK8S/*
+    defaultNamespace: dev
+# 도커 이미지 빌드 관련 설정
+build:
+  # local:
+  #   push: false
+  # googleCloudBuild:
+  #   projectId: kubernetes-315817
+  artifacts:
+    - image: doyeon/getmem
+      context: getmem
+      docker:
+        dockerfile: Dockerfile
+    - image: doyeon/nodecheck
+      context: nodecheck
+      docker:
+        dockerfile: Dockerfile
+    - image: doyeon/sayservice
+      context: sayservice
+      docker:
+        dockerfile: Dockerfile
+    - image: doyeon/frontend
+      context: frontend
+      docker:
+        dockerfile: Dockerfile
+# 소스 싱크 관련 설정
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+          - src: 'src/**/*.js'
+            dest: .
